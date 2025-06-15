@@ -1,12 +1,11 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5;
-    public float runSpeed = 7;
-    public float jumpForce = 300;
+    public float moveSpeed = 5f;
+    public float runSpeed = 7f;
+    public float jumpForce = 300f;
+
     public Rigidbody2D rb;
     public Animator anim;
     public SpriteRenderer spriteRenderer;
@@ -14,13 +13,12 @@ public class PlayerController : MonoBehaviour
     public GroundChecker groundChecker;
     public PlayerHealth health;
 
-
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        health = GetComponent<PlayerHealth>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        health = GetComponent<PlayerHealth>();
     }
 
     void Update()
@@ -29,37 +27,28 @@ public class PlayerController : MonoBehaviour
 
         float moveInput = Input.GetAxis("Horizontal");
 
-        if(moveInput >= 0)
-        {
+        // Flip sprite
+        if (moveInput > 0)
             spriteRenderer.flipX = false;
-        }else if (moveInput < 0)
-        {
+        else if (moveInput < 0)
             spriteRenderer.flipX = true;
-        }
 
-        if (moveInput != 0)
-        {
-            anim.SetBool("IsRun", true);
-        }
-        else
-        {
-            anim.SetBool("IsRun", false);
-        }
-        //Debug.Log($"Input value: {moveInput}");
-        if (Input.GetKey(KeyCode.LeftShift))
-        {
-            rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
-        }
-        else
-        {
-            rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-        }
+        // Run animation
+        anim.SetBool("IsRun", moveInput != 0);
 
+        // Move character
+        float currentSpeed = Input.GetKey(KeyCode.LeftShift) ? runSpeed : moveSpeed;
+        rb.velocity = new Vector2(moveInput * currentSpeed, rb.velocity.y);
+
+        // Jump
         if (Input.GetKeyDown(KeyCode.Space) && groundChecker.isGrounded)
         {
-            //rb.AddForce(new Vector2(0,jumpForce));
             rb.AddForce(Vector2.up * jumpForce);
         }
-    }
 
+        // Handle Jump/Fall Animations
+        anim.SetBool("IsJump", !groundChecker.isGrounded && rb.velocity.y > 0.1f);
+        anim.SetBool("IsFall", !groundChecker.isGrounded && rb.velocity.y < -0.1f);
+
+    }
 }

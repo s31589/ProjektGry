@@ -11,7 +11,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - BackGround
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: BAck
+    uniqueID: 353835065
+    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0

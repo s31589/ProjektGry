@@ -6,16 +6,21 @@ public class Collectible : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.gameObject.CompareTag("Player"))
-        {
+        if (!collision.CompareTag("Player"))
             return;
-        }
-        //TODO send info to player
-        Inventory playerInventory = null;
-        playerInventory = collision.gameObject.GetComponent<Inventory>();
 
-        //playerInventory.
+        Inventory playerInventory = collision.GetComponent<Inventory>();
+        if (playerInventory != null)
+        {
+            playerInventory.AddCollectible();
+            Debug.Log("Player touched collectible");
+        }
+        else
+        {
+            Debug.LogWarning("Inventory component not found on player!");
+        }
 
         Destroy(gameObject);
     }
 }
+
